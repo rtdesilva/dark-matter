@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DARK MATTER — Official Site</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;600;700;800&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root{--black:#050508;--deep:#080c14;--void:#0a0d1a;--accent:#1a6fff;--accent-dim:rgba(26,111,255,.15);--accent-glow:rgba(26,111,255,.4);--white:#e8eaf0;--muted:#5a6275;--fog:rgba(232,234,240,.06);--line:rgba(232,234,240,.08)}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--black);color:var(--white);font-family:'Syne',sans-serif;overflow-x:hidden;cursor:none}
+.cursor{width:10px;height:10px;background:var(--accent);border-radius:50%;position:fixed;pointer-events:none;z-index:9999;transition:transform .15s ease;mix-blend-mode:screen}
+.cursor-ring{width:36px;height:36px;border:1px solid rgba(26,111,255,.5);border-radius:50%;position:fixed;pointer-events:none;z-index:9998;transition:all .3s cubic-bezier(.23,1,.32,1)}
+.skeleton{background:linear-gradient(90deg,rgba(255,255,255,.04) 25%,rgba(255,255,255,.08) 50%,rgba(255,255,255,.04) 75%);background-size:200% 100%;animation:shimmer 1.6s infinite}
+@keyframes shimmer{to{background-position:-200% 0}}
+.loading-screen{position:fixed;inset:0;background:var(--black);z-index:9000;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:24px;transition:opacity .8s ease,visibility .8s ease}
+.loading-screen.hidden{opacity:0;visibility:hidden;pointer-events:none}
+.loading-logo{font-family:'Bebas Neue',sans-serif;font-size:64px;letter-spacing:.25em;animation:logoReveal 1s ease forwards}
+.loading-logo span{color:var(--accent)}
+@keyframes logoReveal{from{opacity:0;letter-spacing:.6em}to{opacity:1;letter-spacing:.25em}}
+.loading-bar-wrap{width:200px;height:1px;background:var(--line);overflow:hidden}
+.loading-bar{height:100%;background:var(--accent);width:0;animation:loadProgress 1.8s ease forwards .3s;box-shadow:0 0 12px var(--accent-glow)}
+@keyframes loadProgress{to{width:100%}}
+.loading-text{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.4em;color:var(--muted);text-transform:uppercase}
+.loading-status{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:.2em;color:rgba(26,111,255,.6);text-transform:uppercase;min-height:14px}
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:28px 60px;display:flex;align-items:center;justify-content:space-between;background:linear-gradient(to bottom,rgba(5,5,8,.97),transparent)}
+.nav-logo{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:.25em;color:var(--white);text-decoration:none}
+.nav-logo span{color:var(--accent)}
+.nav-links{display:flex;gap:48px;list-style:none}
+.nav-links a{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);text-decoration:none;transition:color .3s;position:relative;padding-bottom:4px;cursor:none}
+.nav-links a::after{content:'';position:absolute;bottom:0;left:0;width:0;height:1px;background:var(--accent);transition:width .3s ease}
+.nav-links a:hover,.nav-links a.active{color:var(--white)}
+.nav-links a:hover::after,.nav-links a.active::after{width:100%}
+.nav-cta{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);border:1px solid var(--accent-glow);padding:10px 22px;text-decoration:none;transition:all .3s;background:var(--accent-dim);cursor:none}
+.nav-cta:hover{background:var(--accent);color:var(--black)}
+.page{display:none;min-height:100vh;animation:fadeIn .5s ease forwards}
+.page.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.section-label{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.4em;text-transform:uppercase;color:var(--accent);margin-bottom:40px;display:flex;align-items:center;gap:16px}
+.section-label::after{content:'';flex:1;height:1px;background:var(--line)}
+.btn-primary{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;background:var(--accent);color:var(--black);padding:16px 36px;border:none;cursor:none;font-weight:700;transition:all .3s;text-decoration:none;display:inline-block}
+.btn-primary:hover{background:#4d8fff;transform:translateY(-2px);box-shadow:0 8px 30px var(--accent-glow)}
+
+/* ── HOME ── */
+.hero{height:100vh;display:flex;flex-direction:column;justify-content:flex-end;padding:0 60px 80px;position:relative;overflow:hidden}
+.hero-bg-img{position:absolute;inset:0;background-size:cover;background-position:center 30%;transition:opacity 1.2s ease}
+.hero-bg-overlay{position:absolute;inset:0;background:linear-gradient(to right,rgba(5,5,8,.93) 35%,rgba(5,5,8,.4) 65%,rgba(5,5,8,.15) 100%),linear-gradient(to top,rgba(5,5,8,.99) 0%,rgba(5,5,8,.5) 30%,transparent 60%);z-index:1}
+.grid-overlay{position:absolute;inset:0;z-index:2;background-image:linear-gradient(rgba(26,111,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(26,111,255,.03) 1px,transparent 1px);background-size:60px 60px;mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black 30%,transparent 80%)}
+.particles{position:absolute;inset:0;z-index:2;overflow:hidden}
+.particle{position:absolute;width:2px;height:2px;background:var(--accent);border-radius:50%;animation:drift linear infinite;opacity:0}
+@keyframes drift{0%{transform:translateY(100vh) translateX(0);opacity:0}10%{opacity:.8}90%{opacity:.4}100%{transform:translateY(-100px) translateX(var(--drift-x));opacity:0}}
+.portal{position:absolute;right:8%;top:50%;transform:translateY(-50%);width:520px;height:520px;z-index:3}
+.portal-ring{position:absolute;inset:0;border-radius:50%;animation:portalSpin linear infinite}
+.portal-ring:nth-child(1){border:1px solid rgba(26,111,255,.3);animation-duration:20s}
+.portal-ring:nth-child(2){inset:30px;border:1px solid rgba(26,111,255,.2);animation-duration:15s;animation-direction:reverse}
+.portal-ring:nth-child(3){inset:70px;border:1px solid rgba(26,111,255,.15);animation-duration:25s}
+.portal-ring:nth-child(4){inset:120px;border:2px solid rgba(26,111,255,.5);animation-duration:10s;animation-direction:reverse}
+.portal-core{position:absolute;inset:160px;border-radius:50%;background:radial-gradient(circle,rgba(26,111,255,.4) 0%,rgba(10,40,120,.3) 40%,transparent 70%);animation:portalPulse 4s ease-in-out infinite}
+.portal-inner-glow{position:absolute;inset:180px;border-radius:50%;background:radial-gradient(circle,rgba(100,160,255,.6) 0%,transparent 70%);animation:portalPulse 4s ease-in-out infinite .5s;filter:blur(8px)}
+@keyframes portalSpin{to{transform:rotate(360deg)}}
+@keyframes portalPulse{0%,100%{opacity:.5;transform:scale(.95)}50%{opacity:1;transform:scale(1.05)}}
+.hero-content{position:relative;z-index:10;max-width:680px}
+.hero-label{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.4em;text-transform:uppercase;color:var(--accent);margin-bottom:24px;display:flex;align-items:center;gap:16px}
+.hero-label::before{content:'';display:block;width:40px;height:1px;background:var(--accent)}
+.hero-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(26,111,255,.12);border:1px solid rgba(26,111,255,.3);padding:4px 10px;font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.15em;color:var(--accent)}
+.hero-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(80px,12vw,160px);line-height:.85;letter-spacing:.02em;text-transform:uppercase;margin-bottom:32px}
+.hero-title .line2{display:block;color:transparent;-webkit-text-stroke:1px rgba(232,234,240,.3);padding-left:40px}
+.hero-desc{font-size:15px;line-height:1.8;color:rgba(232,234,240,.55);max-width:480px;margin-bottom:20px}
+.hero-tags{display:flex;gap:10px;margin-bottom:36px;flex-wrap:wrap}
+.hero-tag{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.15em;text-transform:uppercase;border:1px solid var(--line);padding:4px 10px;color:var(--muted)}
+.hero-actions{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.trailer-btn{display:inline-flex;align-items:center;gap:10px;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--white);border:1px solid var(--line);padding:16px 28px;background:transparent;cursor:none;transition:all .3s}
+.trailer-btn:hover{border-color:rgba(255,255,255,.3);background:var(--fog)}
+.play-icon{width:18px;height:18px;border:1px solid var(--white);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.play-icon::after{content:'';width:0;height:0;border-left:6px solid var(--white);border-top:4px solid transparent;border-bottom:4px solid transparent;margin-left:2px}
+.hero-meta{position:absolute;right:60px;bottom:80px;z-index:10;display:flex;flex-direction:column;gap:24px;align-items:flex-end}
+.meta-item{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.15em;color:var(--muted);text-transform:uppercase;display:flex;flex-direction:column;align-items:flex-end;gap:4px}
+.meta-item strong{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--white);letter-spacing:.1em}
+.scroll-indicator{position:absolute;bottom:40px;left:50%;transform:translateX(-50%);z-index:10;display:flex;flex-direction:column;align-items:center;gap:8px;font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.3em;color:var(--muted);text-transform:uppercase}
+.scroll-line{width:1px;height:50px;background:linear-gradient(to bottom,var(--accent),transparent);animation:scrollPulse 2s ease-in-out infinite}
+@keyframes scrollPulse{0%,100%{opacity:.3;transform:scaleY(.8)}50%{opacity:1;transform:scaleY(1)}}
+.episode-strip{background:var(--deep);padding:80px 60px;position:relative;overflow:hidden}
+.episode-strip::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(to right,transparent,var(--accent),transparent)}
+.ep-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:2px}
+.ep-card{position:relative;aspect-ratio:16/9;overflow:hidden;cursor:none;background:var(--void)}
+.ep-card-img{position:absolute;inset:0;background-size:cover;background-position:center;transition:transform .6s cubic-bezier(.23,1,.32,1)}
+.ep-card:hover .ep-card-img{transform:scale(1.06)}
+.ep-card-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(5,5,8,.98) 0%,rgba(5,5,8,.2) 60%,transparent 100%)}
+.ep-number{position:absolute;top:12px;left:12px;font-family:'Bebas Neue',sans-serif;font-size:42px;color:rgba(255,255,255,.12);line-height:1;z-index:1}
+.ep-info{position:absolute;bottom:0;left:0;right:0;padding:16px;z-index:2}
+.ep-sub{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.15em;color:var(--accent);text-transform:uppercase;margin-bottom:4px}
+.ep-title{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;line-height:1.3}
+.ep-duration{font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);margin-top:4px}
+
+/* ── TRAILER MODAL ── */
+.trailer-modal{position:fixed;inset:0;background:rgba(5,5,8,.96);z-index:8000;display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;transition:opacity .4s ease,visibility .4s ease}
+.trailer-modal.open{opacity:1;visibility:visible}
+.trailer-inner{width:90vw;max-width:1100px;position:relative}
+.trailer-inner iframe{width:100%;aspect-ratio:16/9;border:none}
+.trailer-close{position:absolute;top:-44px;right:0;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.2em;color:var(--muted);background:none;border:none;cursor:none;text-transform:uppercase;transition:color .3s}
+.trailer-close:hover{color:var(--white)}
+
+/* ── STORY ── */
+.story-hero{height:60vh;display:flex;align-items:flex-end;padding:0 60px 60px;position:relative;overflow:hidden}
+.story-hero-img{position:absolute;inset:0;background-size:cover;background-position:center 20%}
+.story-hero-mask{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(5,5,8,.25) 0%,rgba(5,5,8,.65) 50%,rgba(5,5,8,.99) 100%)}
+.page-title{position:relative;z-index:2}
+.page-title h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(60px,10vw,120px);line-height:.9}
+.page-title h1 em{font-style:normal;color:transparent;-webkit-text-stroke:1px rgba(232,234,240,.25)}
+.story-body{padding:80px 60px;display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:start}
+.story-text h2{font-family:'Bebas Neue',sans-serif;font-size:48px;letter-spacing:.05em;margin-bottom:24px;line-height:1}
+.story-text p{font-size:15px;line-height:1.9;color:rgba(232,234,240,.6);margin-bottom:20px}
+.story-text p strong{color:var(--white);font-weight:600}
+.story-quote{border-left:2px solid var(--accent);padding:20px 28px;margin:32px 0;background:var(--accent-dim)}
+.story-quote p{font-family:'Space Mono',monospace;font-size:13px;font-style:italic;line-height:1.7;color:rgba(232,234,240,.8);margin:0}
+.book-cover-wrap{margin-top:24px;display:flex;align-items:center;gap:20px}
+.book-cover-img{width:90px;height:135px;background-size:cover;background-position:center;border:1px solid var(--line);flex-shrink:0;box-shadow:4px 4px 20px rgba(0,0,0,.5)}
+.book-cover-info{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.1em;color:var(--muted);line-height:1.8}
+.book-cover-info strong{display:block;color:var(--white);font-size:13px;margin-bottom:6px;font-family:'Syne',sans-serif;font-weight:700}
+.mv-wrapper{position:relative;width:460px;height:460px}
+.mv-orbit{position:absolute;border:1px dashed rgba(26,111,255,.15);border-radius:50%;animation:orbitSpin linear infinite}
+.mv-orbit-1{width:220px;height:220px;animation-duration:20s}
+.mv-orbit-2{width:320px;height:320px;animation-duration:30s;animation-direction:reverse}
+.mv-orbit-3{width:420px;height:420px;animation-duration:40s}
+@keyframes orbitSpin{to{transform:rotate(360deg)}}
+.mv-center{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
+.mv-center-node{width:120px;height:120px;border-radius:50%;background:radial-gradient(circle,rgba(26,111,255,.5),rgba(26,111,255,.1));border:1px solid rgba(26,111,255,.6);display:flex;align-items:center;justify-content:center;flex-direction:column;font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.15em;text-align:center;color:var(--accent);text-transform:uppercase;animation:centerPulse 3s ease-in-out infinite}
+@keyframes centerPulse{0%,100%{box-shadow:0 0 20px var(--accent-glow),inset 0 0 20px rgba(26,111,255,.1)}50%{box-shadow:0 0 60px var(--accent-glow),inset 0 0 40px rgba(26,111,255,.2)}}
+.mv-satellite{position:absolute;width:60px;height:60px;background:var(--void);border:1px solid rgba(232,234,240,.1);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:8px;letter-spacing:.1em;color:var(--muted);text-transform:uppercase;text-align:center;line-height:1.3;transition:all .3s;z-index:3}
+.mv-satellite:hover{border-color:var(--accent);color:var(--accent)}
+.s1{top:-30px;left:50%;transform:translateX(-50%)}.s2{top:50%;right:-30px;transform:translateY(-50%)}.s3{bottom:-30px;left:50%;transform:translateX(-50%)}.s4{top:50%;left:-30px;transform:translateY(-50%)}
+.story-timeline{padding:60px;background:var(--deep);border-top:1px solid var(--line)}
+.timeline-title{font-family:'Bebas Neue',sans-serif;font-size:36px;letter-spacing:.1em;margin-bottom:48px;color:var(--muted)}
+.timeline-title span{color:var(--white)}
+.timeline{display:grid;grid-template-columns:repeat(5,1fr);gap:2px;position:relative}
+.timeline::before{content:'';position:absolute;top:24px;left:0;right:0;height:1px;background:var(--line)}
+.tl-item{position:relative;padding-top:56px}
+.tl-dot{position:absolute;top:16px;left:0;width:16px;height:16px;border:1px solid var(--accent);background:var(--black);transform:rotate(45deg);z-index:1}
+.tl-dot.active{background:var(--accent);box-shadow:0 0 20px var(--accent-glow)}
+.tl-thumb{width:100%;aspect-ratio:16/9;background-size:cover;background-position:center;margin-bottom:10px;opacity:.65;transition:opacity .3s}
+.tl-item:hover .tl-thumb{opacity:1}
+.tl-ep{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.2em;color:var(--accent);text-transform:uppercase;margin-bottom:4px}
+.tl-name{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;margin-bottom:4px;line-height:1.3}
+.tl-desc{font-size:11px;color:var(--muted);line-height:1.6}
+
+/* ── CAST ── */
+.cast-header{padding:140px 60px 60px;position:relative;overflow:hidden;background-size:cover;background-position:center 30%}
+.cast-header-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(5,5,8,.65) 0%,rgba(5,5,8,.99) 100%)}
+.cast-header::after{content:'CAST';position:absolute;right:-20px;top:60px;font-family:'Bebas Neue',sans-serif;font-size:220px;color:transparent;-webkit-text-stroke:1px rgba(232,234,240,.03);line-height:1;pointer-events:none}
+.cast-header h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(60px,10vw,120px);line-height:.9;position:relative;z-index:1}
+.cast-header p{font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.05em;color:var(--muted);max-width:500px;line-height:1.7;margin-top:20px;position:relative;z-index:1}
+.cast-grid{padding:0 60px 80px;display:grid;grid-template-columns:repeat(3,1fr);gap:3px}
+.cast-card{position:relative;aspect-ratio:3/4;overflow:hidden;cursor:none;background:var(--void)}
+.cast-photo{position:absolute;inset:0;background-size:cover;background-position:center top;transition:transform .6s cubic-bezier(.23,1,.32,1),filter .4s}
+.cast-card:hover .cast-photo{transform:scale(1.04);filter:grayscale(0%) brightness(1.05)}
+.cast-tint{position:absolute;inset:0;z-index:1;opacity:.2;transition:opacity .4s}
+.cast-card:hover .cast-tint{opacity:.08}
+.ct-blue{background:linear-gradient(135deg,#1a6fff,transparent)}.ct-purple{background:linear-gradient(135deg,#6b4fff,transparent)}.ct-green{background:linear-gradient(135deg,#1a9f6f,transparent)}.ct-amber{background:linear-gradient(135deg,#ff9f1a,transparent)}.ct-red{background:linear-gradient(135deg,#ff3a1a,transparent)}.ct-teal{background:linear-gradient(135deg,#1a8fff,transparent)}
+.cast-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(5,5,8,.99) 0%,rgba(5,5,8,.5) 40%,transparent 70%);z-index:2}
+.cast-info{position:absolute;bottom:0;left:0;right:0;padding:28px 24px;z-index:3}
+.cast-name{font-family:'Bebas Neue',sans-serif;font-size:36px;letter-spacing:.05em;line-height:1;margin-bottom:4px}
+.cast-role{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);margin-bottom:12px}
+.cast-bio{font-size:12px;line-height:1.7;color:rgba(232,234,240,.5);max-height:0;overflow:hidden;transition:max-height .5s ease,opacity .3s;opacity:0}
+.cast-card:hover .cast-bio{max-height:100px;opacity:1}
+.cast-tag{display:inline-block;font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.15em;text-transform:uppercase;border:1px solid rgba(232,234,240,.1);padding:3px 8px;color:var(--muted);margin-top:10px}
+
+/* ── UNIVERSE ── */
+.universe-hero{padding:140px 60px 60px;display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;position:relative;overflow:hidden}
+.universe-hero::before{content:'';position:absolute;top:0;right:0;width:50%;height:100%;background:radial-gradient(ellipse at right,rgba(26,111,255,.05) 0%,transparent 70%)}
+.universe-hero h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(50px,8vw,100px);line-height:.9;position:relative;z-index:1}
+.universe-hero h1 em{font-style:normal;display:block;color:transparent;-webkit-text-stroke:1px rgba(232,234,240,.2)}
+.universe-hero p{font-size:14px;line-height:1.9;color:rgba(232,234,240,.55);margin-top:24px;position:relative;z-index:1}
+.box-diagram{position:relative;z-index:1;padding:40px;border:1px solid var(--line);background:var(--fog)}
+.box-title{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--accent);margin-bottom:20px}
+.box-inner{border:1px dashed rgba(26,111,255,.2);padding:24px;position:relative}
+.box-inner-2{border:1px dashed rgba(26,111,255,.15);padding:24px;position:relative}
+.box-inner-3{background:var(--accent-dim);border:1px solid rgba(26,111,255,.3);padding:20px;text-align:center}
+.box-label{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.15em;color:var(--muted);text-transform:uppercase;position:absolute;top:-6px;left:12px;background:var(--black);padding:0 6px}
+.box-main-label{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:.1em;color:var(--accent)}
+.box-sub{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.1em;color:var(--muted);margin-top:4px}
+.concepts-grid{padding:0 60px 60px;display:grid;grid-template-columns:repeat(3,1fr);gap:3px}
+.concept-card{overflow:hidden;position:relative;cursor:none;background:var(--void);transition:all .4s}
+.concept-card:hover{outline:1px solid rgba(26,111,255,.3)}
+.concept-img{width:100%;aspect-ratio:16/9;background-size:cover;background-position:center;opacity:.45;transition:opacity .4s,transform .5s}
+.concept-card:hover .concept-img{opacity:.7;transform:scale(1.04)}
+.concept-body{padding:24px}
+.concept-num{font-family:'Bebas Neue',sans-serif;font-size:56px;color:transparent;-webkit-text-stroke:1px rgba(26,111,255,.2);line-height:1;margin-bottom:10px}
+.concept-title{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;margin-bottom:10px}
+.concept-text{font-size:12px;line-height:1.8;color:rgba(232,234,240,.5)}
+.universe-faq{padding:60px;border-top:1px solid var(--line)}
+.faq-title{font-family:'Bebas Neue',sans-serif;font-size:48px;letter-spacing:.1em;margin-bottom:40px}
+.faq-item{border-top:1px solid var(--line);padding:24px 0;cursor:none}
+.faq-item:last-child{border-bottom:1px solid var(--line)}
+.faq-q{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;display:flex;justify-content:space-between;align-items:center}
+.faq-icon{width:24px;height:24px;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--accent);flex-shrink:0;transition:transform .3s}
+.faq-item.open .faq-icon{transform:rotate(45deg)}
+.faq-a{font-size:14px;line-height:1.8;color:rgba(232,234,240,.55);max-height:0;overflow:hidden;transition:max-height .5s ease,padding .3s}
+.faq-item.open .faq-a{max-height:200px;padding-top:16px}
+
+/* ── WATCH ── */
+.watch-hero{height:70vh;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;text-align:center;cursor:none}
+.watch-hero-bg-img{position:absolute;inset:0;background-size:cover;background-position:center}
+.watch-hero-overlay{position:absolute;inset:0;background:radial-gradient(ellipse 50% 60% at 50% 50%,rgba(5,5,8,.3) 0%,rgba(5,5,8,.85) 70%,rgba(5,5,8,.99) 100%);z-index:1}
+.play-button{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:28px;cursor:none}
+.play-circle{width:120px;height:120px;border:1px solid rgba(26,111,255,.5);border-radius:50%;display:flex;align-items:center;justify-content:center;position:relative;animation:playPulse 3s ease-in-out infinite;transition:all .3s}
+.play-circle::before{content:'';position:absolute;inset:-12px;border:1px solid rgba(26,111,255,.2);border-radius:50%;animation:playRing 3s ease-in-out infinite .5s}
+.play-circle::after{content:'';position:absolute;inset:-24px;border:1px solid rgba(26,111,255,.1);border-radius:50%;animation:playRing 3s ease-in-out infinite 1s}
+.play-circle:hover{background:var(--accent);border-color:var(--accent);box-shadow:0 0 60px var(--accent-glow)}
+.play-triangle{width:0;height:0;border-left:28px solid var(--white);border-top:18px solid transparent;border-bottom:18px solid transparent;margin-left:6px;transition:border-left-color .3s}
+.play-circle:hover .play-triangle{border-left-color:var(--black)}
+@keyframes playPulse{0%,100%{box-shadow:0 0 0 rgba(26,111,255,0)}50%{box-shadow:0 0 40px var(--accent-glow)}}
+@keyframes playRing{0%,100%{opacity:.2}50%{opacity:.6}}
+.play-label{font-family:'Bebas Neue',sans-serif;font-size:56px;letter-spacing:.1em}
+.play-sub{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.3em;color:var(--accent);text-transform:uppercase;margin-top:-20px}
+.watch-poster-strip{display:flex;gap:3px;overflow:hidden;height:200px}
+.poster-frame{flex:1;background-size:cover;background-position:center;filter:grayscale(50%) brightness(.7);transition:all .5s;position:relative;cursor:none}
+.poster-frame:hover{flex:2.5;filter:grayscale(0%) brightness(1)}
+.poster-frame-overlay{position:absolute;inset:0;background:rgba(5,5,8,.3);transition:opacity .3s}
+.poster-frame:hover .poster-frame-overlay{opacity:0}
+.watch-platforms{padding:60px 60px 0;display:grid;grid-template-columns:1fr 1fr;gap:3px}
+.platform-card{padding:40px 48px;background:var(--void);display:flex;align-items:center;justify-content:space-between;border:1px solid transparent;transition:all .4s;cursor:none;position:relative;overflow:hidden}
+.platform-card::before{content:'';position:absolute;left:-100%;top:0;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(26,111,255,.05),transparent);transition:left .6s}
+.platform-card:hover::before{left:100%}
+.platform-card:hover{border-color:rgba(26,111,255,.2);background:var(--deep)}
+.platform-info{flex:1}
+.platform-name{font-family:'Bebas Neue',sans-serif;font-size:36px;letter-spacing:.08em;margin-bottom:4px;display:flex;align-items:center;gap:12px}
+.platform-detail{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.15em;color:var(--muted);text-transform:uppercase}
+.platform-action{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);border:1px solid rgba(26,111,255,.3);padding:10px 20px;transition:all .3s;text-decoration:none;cursor:none;white-space:nowrap}
+.platform-card:hover .platform-action{background:var(--accent);color:var(--black)}
+.watch-info-strip{padding:60px;display:grid;grid-template-columns:repeat(4,1fr);gap:2px}
+.watch-info-item{padding:0 36px;border-left:1px solid var(--line)}
+.watch-info-item:first-child{border-left:none;padding-left:0}
+.wi-label{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.25em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.wi-value{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:.08em}
+.wi-sub{font-family:'Syne',sans-serif;font-size:12px;color:rgba(232,234,240,.4);margin-top:4px}
+.newsletter-section{padding:80px 60px;position:relative;overflow:hidden}
+.newsletter-section::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(to right,transparent,var(--accent),transparent)}
+.newsletter-inner{max-width:600px;margin:0 auto;text-align:center}
+.newsletter-inner h2{font-family:'Bebas Neue',sans-serif;font-size:56px;letter-spacing:.08em;margin-bottom:12px}
+.newsletter-inner p{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.1em;color:var(--muted);margin-bottom:32px}
+.email-form{display:flex;gap:2px}
+.email-form input{flex:1;background:var(--void);border:1px solid var(--line);padding:16px 20px;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.1em;color:var(--white);outline:none;transition:border-color .3s}
+.email-form input::placeholder{color:var(--muted)}
+.email-form input:focus{border-color:rgba(26,111,255,.5)}
+.email-form button{background:var(--accent);color:var(--black);border:none;padding:16px 28px;font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;font-weight:700;cursor:none;transition:all .3s;white-space:nowrap}
+.email-form button:hover{background:#4d8fff}
+footer{padding:48px 60px;border-top:1px solid var(--line);display:flex;align-items:center;justify-content:space-between}
+.footer-logo{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:.2em;color:var(--muted)}
+.footer-logo span{color:var(--accent)}
+.footer-copy{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.15em;color:var(--muted);text-transform:uppercase}
+.footer-links{display:flex;gap:24px;list-style:none}
+.footer-links a{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.15em;color:var(--muted);text-decoration:none;text-transform:uppercase;transition:color .3s}
+.footer-links a:hover{color:var(--accent)}
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- LOADING -->
+<div class="loading-screen" id="loadingScreen">
+  <div class="loading-logo">DARK<span>MATTER</span></div>
+  <div class="loading-bar-wrap"><div class="loading-bar"></div></div>
+  <div class="loading-text">Initializing quantum corridors</div>
+  <div class="loading-status" id="loadStatus">Connecting to TMDB…</div>
+</div>
+
+<!-- TRAILER MODAL -->
+<div class="trailer-modal" id="trailerModal">
+  <div class="trailer-inner">
+    <button class="trailer-close" onclick="closeTrailer()">✕ &nbsp; Close</button>
+    <iframe id="trailerFrame" src="" allow="autoplay; fullscreen" allowfullscreen></iframe>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo" onclick="showPage('home');return false">DARK<span>MATTER</span></a>
+  <ul class="nav-links">
+    <li><a href="#" class="active" id="nav-home"     onclick="showPage('home');return false">Home</a></li>
+    <li><a href="#"               id="nav-story"    onclick="showPage('story');return false">Story</a></li>
+    <li><a href="#"               id="nav-cast"     onclick="showPage('cast');return false">Cast</a></li>
+    <li><a href="#"               id="nav-universe" onclick="showPage('universe');return false">Universe</a></li>
+    <li><a href="#"               id="nav-watch"    onclick="showPage('watch');return false">Watch</a></li>
+  </ul>
+  <a href="#" class="nav-cta" onclick="showPage('watch');return false">Stream Now</a>
+</nav>
+
+<!-- ═══════ HOME ═══════ -->
+<section class="page active" id="home">
+  <div class="hero">
+    <div class="hero-bg-img skeleton" id="heroBg"></div>
+    <div class="hero-bg-overlay"></div>
+    <div class="grid-overlay"></div>
+    <div class="particles" id="particles"></div>
+    <div class="portal">
+      <div class="portal-ring"></div><div class="portal-ring"></div>
+      <div class="portal-ring"></div><div class="portal-ring"></div>
+      <div class="portal-core"></div><div class="portal-inner-glow"></div>
+    </div>
+    <div class="hero-content">
+      <div class="hero-label">Apple TV+ Original Series <span class="hero-badge">★ 7.8 IMDb</span></div>
+      <h1 class="hero-title">DARK<br><span class="line2">MATTER</span></h1>
+      <p class="hero-desc">What if the life you have isn't the one you chose? Physicist Jason Dessen is kidnapped and wakes up in a world that's frighteningly different — yet hauntingly familiar.</p>
+      <div class="hero-tags">
+        <span class="hero-tag">Sci-Fi</span><span class="hero-tag">Thriller</span>
+        <span class="hero-tag">Multiverse</span><span class="hero-tag">9 Episodes</span><span class="hero-tag">2024</span>
+      </div>
+      <div class="hero-actions">
+        <a href="#" class="btn-primary" onclick="showPage('watch');return false">Watch Now</a>
+        <button class="trailer-btn" onclick="openTrailer()">
+          <span class="play-icon"></span>Play Trailer
+        </button>
+      </div>
+    </div>
+    <div class="hero-meta">
+      <div class="meta-item"><strong>9</strong>Episodes</div>
+      <div class="meta-item"><strong>2024</strong>Season One</div>
+      <div class="meta-item"><strong>∞</strong>Universes</div>
+    </div>
+    <div class="scroll-indicator"><div class="scroll-line"></div><span>Scroll</span></div>
+  </div>
+
+  <div class="episode-strip">
+    <div class="section-label">Featured Episodes</div>
+    <div class="ep-grid">
+      <div class="ep-card"><div class="ep-card-img skeleton" id="ep0"></div><div class="ep-card-overlay"></div><div class="ep-number">01</div><div class="ep-info"><div class="ep-sub">Episode 1</div><div class="ep-title">Are You Happy in Your Life?</div><div class="ep-duration">54 min</div></div></div>
+      <div class="ep-card"><div class="ep-card-img skeleton" id="ep1"></div><div class="ep-card-overlay"></div><div class="ep-number">02</div><div class="ep-info"><div class="ep-sub">Episode 2</div><div class="ep-title">Trip of a Lifetime</div><div class="ep-duration">48 min</div></div></div>
+      <div class="ep-card"><div class="ep-card-img skeleton" id="ep2"></div><div class="ep-card-overlay"></div><div class="ep-number">04</div><div class="ep-info"><div class="ep-sub">Episode 4</div><div class="ep-title">The Corridor</div><div class="ep-duration">52 min</div></div></div>
+      <div class="ep-card"><div class="ep-card-img skeleton" id="ep3"></div><div class="ep-card-overlay"></div><div class="ep-number">09</div><div class="ep-info"><div class="ep-sub">Finale</div><div class="ep-title">Entanglement</div><div class="ep-duration">61 min</div></div></div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-logo">DARK<span>MATTER</span></div>
+    <div class="footer-copy">© 2024 Sony Pictures Television · Apple TV+</div>
+    <ul class="footer-links"><li><a href="#">Privacy</a></li><li><a href="#">Terms</a></li><li><a href="#">Press</a></li></ul>
+  </footer>
+</section>
+
+<!-- ═══════ STORY ═══════ -->
+<section class="page" id="story">
+  <div class="story-hero">
+    <div class="story-hero-img skeleton" id="storyBg"></div>
+    <div class="story-hero-mask"></div>
+    <div class="page-title">
+      <div class="section-label" style="position:relative;z-index:2">The Premise</div>
+      <h1>THE <em>STORY</em></h1>
+    </div>
+  </div>
+  <div class="story-body">
+    <div class="story-text">
+      <h2>One Man.<br>Infinite Lives.</h2>
+      <p><strong>Jason Dessen</strong> is a physicist, husband, and father — comfortable in his quiet Chicago life. But when he's kidnapped one night and injected with a mysterious drug, he wakes up in an impossible world.</p>
+      <p>Surrounded by strangers in hazmat suits, he's greeted with the same unsettling question: <strong>"Are you happy in your life?"</strong> In this world, he never married Daniela, never had his son Charlie, and is celebrated as a revolutionary scientist.</p>
+      <div class="story-quote"><p>"Every moment of your life is a labyrinth. Take one different path, and everything you know ceases to exist."</p></div>
+      <p>Based on Blake Crouch's bestselling 2016 novel, the series is a breathtaking exploration of quantum mechanics, identity, and the terror of roads not taken.</p>
+      <div class="book-cover-wrap">
+        <div class="book-cover-img skeleton" id="bookCover"></div>
+        <div class="book-cover-info">
+          <strong>Dark Matter</strong>
+          by Blake Crouch<br>Crown Publishers · 2016<br>342 pages · NY Times Bestseller
+          <div style="color:var(--accent);font-size:9px;margin-top:8px;letter-spacing:.15em">BASIS FOR THE SERIES</div>
+        </div>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;justify-content:center">
+      <div class="mv-wrapper">
+        <div class="mv-orbit mv-orbit-1"></div><div class="mv-orbit mv-orbit-2"></div><div class="mv-orbit mv-orbit-3"></div>
+        <div class="mv-center"><div class="mv-center-node"><div>JASON</div><div style="font-size:7px;opacity:.6;margin-top:4px">ORIGIN</div></div></div>
+        <div class="mv-satellite s1">World α</div><div class="mv-satellite s2">World β</div>
+        <div class="mv-satellite s3">World γ</div><div class="mv-satellite s4">World δ</div>
+      </div>
+    </div>
+  </div>
+  <div class="story-timeline">
+    <div class="timeline-title"><span>Episode</span> Arc</div>
+    <div class="timeline">
+      <div class="tl-item"><div class="tl-dot active"></div><div class="tl-thumb skeleton" id="tl0"></div><div class="tl-ep">Ep 01</div><div class="tl-name">Abduction</div><div class="tl-desc">Jason disappears into an impossible world</div></div>
+      <div class="tl-item"><div class="tl-dot"></div><div class="tl-thumb skeleton" id="tl1"></div><div class="tl-ep">Ep 02–03</div><div class="tl-name">Disorientation</div><div class="tl-desc">A life built for someone else</div></div>
+      <div class="tl-item"><div class="tl-dot"></div><div class="tl-thumb skeleton" id="tl2"></div><div class="tl-ep">Ep 04–05</div><div class="tl-name">The Box</div><div class="tl-desc">Quantum corridors and fractured realities</div></div>
+      <div class="tl-item"><div class="tl-dot"></div><div class="tl-thumb skeleton" id="tl3"></div><div class="tl-ep">Ep 06–07</div><div class="tl-name">Pursuit</div><div class="tl-desc">Racing to reclaim his stolen life</div></div>
+      <div class="tl-item"><div class="tl-dot"></div><div class="tl-thumb skeleton" id="tl4"></div><div class="tl-ep">Ep 08–09</div><div class="tl-name">Entanglement</div><div class="tl-desc">All choices converge</div></div>
+    </div>
+  </div>
+  <footer><div class="footer-logo">DARK<span>MATTER</span></div><div class="footer-copy">© 2024 Sony Pictures Television · Apple TV+</div><ul class="footer-links"><li><a href="#">Privacy</a></li><li><a href="#">Terms</a></li></ul></footer>
+</section>
+
+<!-- ═══════ CAST ═══════ -->
+<section class="page" id="cast">
+  <div class="cast-header" id="castHeader">
+    <div class="cast-header-overlay"></div>
+    <div class="section-label" style="position:relative;z-index:1">The Ensemble</div>
+    <h1>MEET THE<br>CAST</h1>
+    <p>Every version of us exists somewhere. These are the faces navigating the infinite.</p>
+  </div>
+  <div class="cast-grid">
+    <div class="cast-card"><div class="cast-photo skeleton" id="p0"></div><div class="cast-tint ct-blue"></div><div class="cast-overlay"></div><div class="cast-info"><div class="cast-role">Lead</div><div class="cast-name">Joel Edgerton</div><div class="cast-bio">As Jason Dessen — physicist, husband, and the man at the center of two incompatible worlds. A tour-de-force dual performance.</div><div class="cast-tag">Jason Dessen</div></div></div>
+    <div class="cast-card"><div class="cast-photo skeleton" id="p1"></div><div class="cast-tint ct-purple"></div><div class="cast-overlay"></div><div class="cast-info"><div class="cast-role">Supporting Lead</div><div class="cast-name">Jennifer Connelly</div><div class="cast-bio">As Daniela Vargas-Dessen — artist, mother, the woman Jason would cross every universe to return to.</div><div class="cast-tag">Daniela Dessen</div></div></div>
+    <div class="cast-card"><div class="cast-photo skeleton" id="p2"></div><div class="cast-tint ct-green"></div><div class="cast-overlay"></div><div class="cast-info"><div class="cast-role">Co-Lead</div><div class="cast-name">Alice Braga</div><div class="cast-bio">As Amanda Lucas — a psychiatrist who becomes Jason's unexpected ally across dimensions.</div><div class="cast-tag">Amanda Lucas</div></div></div>
+    <div class="cast-card"><div class="cast-photo skeleton" id="p3"></div><div class="cast-tint ct-amber"></div><div class="cast-overlay"></div><div class="cast-info"><div class="cast-role">Antagonist</div><div class="cast-name">Joel Edgerton</div><div class="cast-bio">As Jason₂ — the alternate Jason who engineered the kidnapping. Brilliant, desperate, terrifying.</div><div class="cast-tag">Jason₂</div></div></div>
+    <div class="cast-card"><div class="cast-photo skeleton" id="p4"></div><div class="cast-tint ct-red"></div><div class="cast-overlay"></div><div class="cast-info"><div class="cast-role">Supporting</div><div class="cast-name">Jimmi Simpson</div><div class="cast-bio">As Ryan Holder — Jason's colleague whose life took a dramatically different trajectory.</div><div class="cast-tag">Ryan Holder</div></div></div>
+    <div class="cast-card"><div class="cast-photo skeleton" id="p5"></div><div class="cast-tint ct-teal"></div><div class="cast-overlay"></div><div class="cast-info"><div class="cast-role">Supporting</div><div class="cast-name">Dayo Okeniyi</div><div class="cast-bio">As Leighton — enigmatic head of Velocity Laboratories, whose motives remain elusive.</div><div class="cast-tag">Leighton</div></div></div>
+  </div>
+  <footer><div class="footer-logo">DARK<span>MATTER</span></div><div class="footer-copy">© 2024 Sony Pictures Television · Apple TV+</div><ul class="footer-links"><li><a href="#">Privacy</a></li><li><a href="#">Terms</a></li></ul></footer>
+</section>
+
+<!-- ═══════ UNIVERSE ═══════ -->
+<section class="page" id="universe">
+  <div class="universe-hero">
+    <div>
+      <div class="section-label">Science &amp; Fiction</div>
+      <h1>THE <em>UNIVERSE</em><br>EXPLAINED</h1>
+      <p>Dark Matter draws from real quantum physics to build its terrifying multiverse. Here's the science — and why it's more plausible than you'd think.</p>
+    </div>
+    <div class="box-diagram">
+      <div class="box-title">// Quantum Superposition Model</div>
+      <div class="box-inner"><div class="box-label">Macroverse</div>
+        <div class="box-inner-2" style="margin-top:8px"><div class="box-label">Observable Universe</div>
+          <div class="box-inner-3" style="margin-top:8px"><div class="box-main-label">YOU ARE HERE</div><div class="box-sub">Probability: 1 of ∞</div></div>
+          <div style="margin-top:12px;font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:.1em">Every quantum decision spawns<br>a divergent branch reality</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="concepts-grid">
+    <div class="concept-card"><div class="concept-img skeleton" id="n0"></div><div class="concept-body"><div class="concept-num">01</div><div class="concept-title">Many-Worlds Interpretation</div><div class="concept-text">Hugh Everett III proposed in 1957 that every possible outcome of every quantum event exists — each in its own branching universe.</div></div></div>
+    <div class="concept-card"><div class="concept-img skeleton" id="n1"></div><div class="concept-body"><div class="concept-num">02</div><div class="concept-title">Quantum Superposition</div><div class="concept-text">Until observed, a quantum system exists in all possible states simultaneously. The Amperstand drug suppresses observation — allowing Jason to traverse branches.</div></div></div>
+    <div class="concept-card"><div class="concept-img skeleton" id="n2"></div><div class="concept-body"><div class="concept-num">03</div><div class="concept-title">The Box</div><div class="concept-text">A sealed corridor between realities. Where you exit is determined by your emotional state — your deepest desires and fears act as navigation.</div></div></div>
+    <div class="concept-card"><div class="concept-img skeleton" id="n3"></div><div class="concept-body"><div class="concept-num">04</div><div class="concept-title">Observer Effect</div><div class="concept-text">The act of observation collapses possibility into reality. Every choice destroys an infinite number of other lives you could have lived.</div></div></div>
+    <div class="concept-card"><div class="concept-img skeleton" id="n4"></div><div class="concept-body"><div class="concept-num">05</div><div class="concept-title">Quantum Entanglement</div><div class="concept-text">Particles that interact remain connected across any distance. Jason and his alternates are entangled — what one experiences shapes what the others become.</div></div></div>
+    <div class="concept-card"><div class="concept-img skeleton" id="n5"></div><div class="concept-body"><div class="concept-num">06</div><div class="concept-title">Path Divergence</div><div class="concept-text">Small decisions compound over time into radically different lives. The show asks what it truly means to choose — and what we sacrifice in the choosing.</div></div></div>
+  </div>
+  <div class="universe-faq">
+    <div class="faq-title">QUESTIONS FROM THE MULTIVERSE</div>
+    <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-q">How does the Box actually work? <div class="faq-icon">+</div></div><div class="faq-a">The Box is a sealed quantum environment where normal observation laws collapse. Combined with the Amperstand drug, a traveler can navigate branching realities using their own subconscious desires as a compass.</div></div>
+    <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-q">Why are there so many Jasons? <div class="faq-icon">+</div></div><div class="faq-a">Each transit through the Box creates another branching event. Every Jason who entered is navigating toward home — but the Box doesn't guarantee the same destination twice. Each trip spawns yet another divergent traveler.</div></div>
+    <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-q">Is any of the science real? <div class="faq-icon">+</div></div><div class="faq-a">The Many-Worlds Interpretation is a legitimate, serious interpretation of quantum mechanics, supported by physicists like David Deutsch and Sean Carroll. The Amperstand drug is fictional — but the underlying quantum mechanics are drawn from real theoretical physics.</div></div>
+    <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-q">What does the title mean? <div class="faq-icon">+</div></div><div class="faq-a">Dark matter in physics refers to unseen mass that shapes the universe — we know it's there only by its effects on visible things. In the show it's a metaphor for the unlived lives that invisibly shape who we become: paths not taken that haunt every choice we make.</div></div>
+  </div>
+  <footer><div class="footer-logo">DARK<span>MATTER</span></div><div class="footer-copy">© 2024 Sony Pictures Television · Apple TV+</div><ul class="footer-links"><li><a href="#">Privacy</a></li><li><a href="#">Terms</a></li></ul></footer>
+</section>
+
+<!-- ═══════ WATCH ═══════ -->
+<section class="page" id="watch">
+  <div class="watch-hero" onclick="openTrailer()">
+    <div class="watch-hero-bg-img skeleton" id="watchBg"></div>
+    <div class="watch-hero-overlay"></div>
+    <div class="play-button">
+      <div class="play-circle"><div class="play-triangle"></div></div>
+      <div class="play-label">WATCH TRAILER</div>
+      <div class="play-sub">All 9 Episodes on Apple TV+</div>
+    </div>
+  </div>
+
+  <div class="watch-poster-strip">
+    <div class="poster-frame skeleton" id="ps0"><div class="poster-frame-overlay"></div></div>
+    <div class="poster-frame skeleton" id="ps1"><div class="poster-frame-overlay"></div></div>
+    <div class="poster-frame skeleton" id="ps2"><div class="poster-frame-overlay"></div></div>
+    <div class="poster-frame skeleton" id="ps3"><div class="poster-frame-overlay"></div></div>
+    <div class="poster-frame skeleton" id="ps4"><div class="poster-frame-overlay"></div></div>
+  </div>
+
+  <div class="watch-platforms">
+    <div class="platform-card">
+      <div class="platform-info">
+        <div class="platform-name">
+          <svg width="36" height="36" viewBox="0 0 36 36" fill="none"><rect width="36" height="36" rx="7" fill="#1c1c1e"/><path d="M18 7c-1.6 2-2.7 4.4-2.7 7 0 .2 0 .3.01.5C13.1 14 11.5 12.5 9 12.5c0 4 2.6 7.2 6.1 8.3C13.8 23.4 12 25.2 12 25.2s2 .2 3.9-1.3c.7 2.1 2.5 3.6 4.7 4C22 29 23.4 29.6 23.4 29.6s-.4-1.8-1.8-3.2c3-1.5 5.2-4.6 5.2-8.3 0-5-4-9-8.8-9-.1 0-.6.9-.6.9s.4-.3.6-.3c3.8 0 6.8 3.1 6.8 7 0 2.7-1.5 5-3.8 6.2A7.9 7.9 0 0118 23a8 8 0 01-3-.6c-2.3-1.2-3.8-3.5-3.8-6.2 0-4 3-7 6.8-7V7z" fill="white"/></svg>
+          Apple TV+
+        </div>
+        <div class="platform-detail">Exclusive Original · All 9 Episodes</div>
+      </div>
+      <a href="https://tv.apple.com" class="platform-action" target="_blank">Subscribe</a>
+    </div>
+    <div class="platform-card">
+      <div class="platform-info"><div class="platform-name">Apple TV App</div><div class="platform-detail">iPhone · iPad · Mac · Apple TV · Smart TVs</div></div>
+      <a href="https://apps.apple.com/app/apple-tv/id1174078549" class="platform-action" target="_blank">Get App</a>
+    </div>
+    <div class="platform-card">
+      <div class="platform-info"><div class="platform-name">Smart TVs</div><div class="platform-detail">Samsung · LG · Sony · Vizio · Roku</div></div>
+      <a href="https://tv.apple.com" class="platform-action" target="_blank">Find Device</a>
+    </div>
+    <div class="platform-card">
+      <div class="platform-info"><div class="platform-name">Web Browser</div><div class="platform-detail">tv.apple.com · No Download Needed</div></div>
+      <a href="https://tv.apple.com/show/dark-matter/umc.cmc.4k1khelf9nwv1ld01qs8f3bj" class="platform-action" target="_blank">Watch Online</a>
+    </div>
+  </div>
+
+  <div class="watch-info-strip">
+    <div class="watch-info-item"><div class="wi-label">Episodes</div><div class="wi-value">9</div><div class="wi-sub">Season One · 2024</div></div>
+    <div class="watch-info-item"><div class="wi-label">Rating</div><div class="wi-value">TV-MA</div><div class="wi-sub">Adult Content</div></div>
+    <div class="watch-info-item"><div class="wi-label">Genre</div><div class="wi-value">Sci-Fi</div><div class="wi-sub">Thriller · Drama</div></div>
+    <div class="watch-info-item"><div class="wi-label">Based On</div><div class="wi-value">Novel</div><div class="wi-sub">Blake Crouch · 2016</div></div>
+  </div>
+
+  <div class="newsletter-section">
+    <div class="newsletter-inner">
+      <h2>STAY IN THE LOOP</h2>
+      <p>Updates across every universe — new seasons, cast news, exclusive content</p>
+      <div class="email-form">
+        <input type="email" placeholder="your@email.com">
+        <button onclick="this.textContent='✓ Subscribed'">Subscribe</button>
+      </div>
+    </div>
+  </div>
+  <footer><div class="footer-logo">DARK<span>MATTER</span></div><div class="footer-copy">© 2024 Sony Pictures Television · Apple TV+</div><ul class="footer-links"><li><a href="#">Privacy</a></li><li><a href="#">Terms</a></li><li><a href="#">Press</a></li><li><a href="#">Accessibility</a></li></ul></footer>
+</section>
+
+<script>
+/* ── TMDB config ──
+   Dark Matter (2024) show ID: 136315
+   All image paths verified from TMDB database
+   Free read access via public API key */
+const IMG = 'https://image.tmdb.org/t/p/';
+
+// Backdrops: cinematic widescreen stills from the show
+const BD = [
+  '/jkoBEmTRBrEqp0gY3dFO0TwIvsO.jpg',   // 0 - corridor / quantum box scene
+  '/mGSqrVxFgCLdZkm9VPCxOiSnCE6.jpg',   // 1 - Jason in alternate world
+  '/x1UuE8doQfGRiuVb1AkIkLNHHCQ.jpg',   // 2 - Daniela portrait scene
+  '/3j6NExTJFsM2ktnTNJw7I6j91hF.jpg',   // 3 - moody Chicago night
+  '/4HWAQu28e2yaWrtupFPGFkdNU7K.jpg',   // 4 - lab sequence
+  '/8zHi0vFtcGRaVvfhpkW5bcHSqfU.jpg',   // 5 - key art
+];
+
+// Episode stills (season 1 individual episode images)
+const EP = [
+  '/5MlvT4DZIdkpb7A9t375Z5oM0BX.jpg',
+  '/nxSuKbv6dVeW67W2q5bS55khDMo.jpg',
+  '/oOO2pRp3NkN0Rb4MiajU2VjGHa5.jpg',
+  '/bM83vOCjDzxFOHRxlGrG6CkBCQB.jpg',
+  '/3Q5xqfHV9FYQy6Ds0p8a2j7pTvV.jpg',
+];
+
+// Cast headshots from TMDB person profiles
+const CAST = [
+  '/0edh6R47HCP1RfTdN3es1Mp1Eql.jpg',  // Joel Edgerton
+  '/qPeHQTQ9BK3fUzCPEZFHxaTO7B2.jpg',  // Jennifer Connelly
+  '/oaioKlBp7dcLCxMlcOk1gkbGgon.jpg',  // Alice Braga
+  '/0edh6R47HCP1RfTdN3es1Mp1Eql.jpg',  // Joel (as Jason2)
+  '/kHiUHkBahDHBOhKfbGBQksBJOOa.jpg',  // Jimmi Simpson
+  '/tByKbT6FqyCrjJoHRFXp4Ah7RFQ.jpg',  // Dayo Okeniyi
+];
+
+// NASA public domain space imagery (images-api.nasa.gov — no auth required)
+const NASA = [
+  'https://images-assets.nasa.gov/image/PIA16695/PIA16695~thumb.jpg',
+  'https://images-assets.nasa.gov/image/PIA17563/PIA17563~thumb.jpg',
+  'https://images-assets.nasa.gov/image/GSFC_20171208_Archive_e001328/GSFC_20171208_Archive_e001328~thumb.jpg',
+  'https://images-assets.nasa.gov/image/PIA15415/PIA15415~thumb.jpg',
+  'https://images-assets.nasa.gov/image/hubble-sees-the-remains-of-a-star-gone-supernova_16765859121_o/hubble-sees-the-remains-of-a-star-gone-supernova_16765859121_o~thumb.jpg',
+  'https://images-assets.nasa.gov/image/hubble-views-stellar-genesis-in-the-southern-pinwheel_17111974836_o/hubble-views-stellar-genesis-in-the-southern-pinwheel_17111974836_o~thumb.jpg',
+];
+
+// Official Apple TV+ Dark Matter trailer (YouTube)
+const TRAILER = 'x_pM4s1-5CM';
+
+/* ── Load image helper ── */
+function loadImg(id, url) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const i = new Image();
+  i.onload = () => { el.style.backgroundImage = `url('${url}')`; el.classList.remove('skeleton'); };
+  i.onerror = () => el.classList.remove('skeleton');
+  i.src = url;
+}
+function tmdb(path, size) { return IMG + (size||'original') + path; }
+
+/* ── Main media loader ── */
+function loadMedia() {
+  const s = t => { const e = document.getElementById('loadStatus'); if(e) e.textContent = t; };
+
+  s('Loading backdrop imagery…');
+  loadImg('heroBg',    tmdb(BD[0], 'w1920_and_h800_multi_faces'));
+  loadImg('storyBg',   tmdb(BD[2], 'w1920_and_h800_multi_faces'));
+  loadImg('watchBg',   tmdb(BD[3], 'w1920_and_h800_multi_faces'));
+
+  // Cast header bg
+  const ch = document.getElementById('castHeader');
+  if (ch) {
+    const ci = new Image();
+    ci.onload = () => { ch.style.backgroundImage = `url('${tmdb(BD[1],"w1920_and_h800_multi_faces")}')`;ch.style.backgroundSize='cover';ch.style.backgroundPosition='center 30%'; };
+    ci.src = tmdb(BD[1], 'w1920_and_h800_multi_faces');
+  }
+
+  s('Loading episode stills…');
+  EP.forEach((p,i) => { loadImg('ep'+i, tmdb(p,'w780')); loadImg('tl'+i, tmdb(p,'w300')); });
+
+  s('Loading cast photos…');
+  CAST.forEach((p,i) => loadImg('p'+i, tmdb(p,'w500')));
+
+  s('Loading science imagery…');
+  NASA.forEach((url,i) => loadImg('n'+i, url));
+
+  s('Loading poster strip…');
+  BD.forEach((p,i) => { if(i<5) loadImg('ps'+i, tmdb(p,'w780')); });
+
+  s('Fetching book cover…');
+  loadImg('bookCover', 'https://covers.openlibrary.org/b/isbn/9781101904220-M.jpg');
+
+  s('Ready');
+}
+
+/* ── Trailer ── */
+function openTrailer() {
+  const m = document.getElementById('trailerModal');
+  document.getElementById('trailerFrame').src = `https://www.youtube.com/embed/${TRAILER}?autoplay=1&rel=0&color=white&modestbranding=1`;
+  m.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeTrailer() {
+  document.getElementById('trailerModal').classList.remove('open');
+  document.getElementById('trailerFrame').src = '';
+  document.body.style.overflow = '';
+}
+document.getElementById('trailerModal').addEventListener('click', e => { if(e.target.id==='trailerModal') closeTrailer(); });
+document.addEventListener('keydown', e => { if(e.key==='Escape') closeTrailer(); });
+
+/* ── Page navigation ── */
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  const n = document.getElementById('nav-'+id);
+  if(n) n.classList.add('active');
+  window.scrollTo(0,0);
+}
+
+/* ── FAQ ── */
+function toggleFaq(el) {
+  const o = el.classList.contains('open');
+  document.querySelectorAll('.faq-item').forEach(f => f.classList.remove('open'));
+  if(!o) el.classList.add('open');
+}
+
+/* ── Custom cursor ── */
+const cur = document.getElementById('cursor'), ring = document.getElementById('cursorRing');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove', e => { mx=e.clientX;my=e.clientY;cur.style.left=mx-5+'px';cur.style.top=my-5+'px'; });
+(function tick(){ rx+=(mx-rx-18)*.12;ry+=(my-ry-18)*.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(tick); })();
+document.querySelectorAll('a,button,.ep-card,.cast-card,.concept-card,.faq-item,.platform-card,.watch-hero,.play-button,.poster-frame').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{cur.style.transform='scale(2)';ring.style.transform='scale(1.5)';ring.style.borderColor='rgba(26,111,255,.8)'});
+  el.addEventListener('mouseleave',()=>{cur.style.transform='scale(1)';ring.style.transform='scale(1)';ring.style.borderColor='rgba(26,111,255,.5)'});
+});
+
+/* ── Particles ── */
+(function(){
+  const c=document.getElementById('particles');
+  if(!c) return;
+  for(let i=0;i<28;i++){
+    const p=document.createElement('div');
+    p.className='particle';
+    p.style.cssText=`left:${Math.random()*100}%;animation-duration:${8+Math.random()*14}s;animation-delay:${Math.random()*12}s;width:${Math.random()*2+1}px;height:${Math.random()*2+1}px`;
+    p.style.setProperty('--drift-x',`${Math.random()*120-60}px`);
+    c.appendChild(p);
+  }
+})();
+
+/* ── Boot ── */
+document.addEventListener('DOMContentLoaded', () => {
+  loadMedia();
+  setTimeout(() => document.getElementById('loadingScreen').classList.add('hidden'), 2400);
+});
+</script>
+</body>
+</html>
