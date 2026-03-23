@@ -562,10 +562,10 @@ const TRAILER = 'x_pM4s1-5CM';
 function loadImg(id, url) {
   const el = document.getElementById(id);
   if (!el) return;
-  const i = new Image();
-  i.onload = () => { el.style.backgroundImage = `url('${url}')`; el.classList.remove('skeleton'); };
-  i.onerror = () => el.classList.remove('skeleton');
-  i.src = url;
+  // Setting the background directly through CSS allows the browser to handle the fetch natively,
+  // typically bypassing the script-initiated CORS/ORB blocks found with new Image()
+  el.style.backgroundImage = `url('${url}')`;
+  el.classList.remove('skeleton');
 }
 function tmdb(path, size) { return IMG + (size||'original') + path; }
 
@@ -607,7 +607,7 @@ function loadMedia() {
 /* ── Trailer ── */
 function openTrailer() {
   const m = document.getElementById('trailerModal');
-  document.getElementById('trailerFrame').src = `https://www.youtube.com/embed/${TRAILER}?autoplay=1&rel=0&color=white&modestbranding=1`;
+  document.getElementById('trailerFrame').src = `https://www.youtube.com/embed/${TRAILER}?autoplay=1&rel=0&color=white&modestbranding=1&origin=${encodeURIComponent(window.location.origin)}`;
   m.classList.add('open');
   document.body.style.overflow = 'hidden';
 }
