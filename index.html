@@ -170,7 +170,11 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:28px 60px;display:f
 .cast-tag{display:inline-block;font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.15em;text-transform:uppercase;border:1px solid rgba(232,234,240,.1);padding:3px 8px;color:var(--muted);margin-top:10px}
 
 /* ── UNIVERSE ── */
-.universe-hero{padding:140px 60px 60px;display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;position:relative;overflow:hidden}
+.universe-header{height:65vh;display:flex;align-items:flex-start;padding:140px 60px 60px;position:relative;overflow:hidden}
+.universe-header-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(5,5,8,.4) 0%,rgba(5,5,8,.65) 50%,rgba(5,5,8,.99) 100%);z-index:1}
+.universe-header .hero-bg-img{object-position:center center}
+.universe-header-content{position:relative;z-index:2}
+.universe-hero{padding:60px 60px 40px;display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;position:relative;overflow:hidden}
 .universe-hero::before{content:'';position:absolute;top:0;right:0;width:50%;height:100%;background:radial-gradient(ellipse at right,rgba(26,111,255,.05) 0%,transparent 70%)}
 .universe-hero h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(50px,8vw,100px);line-height:.9;position:relative;z-index:1}
 .universe-hero h1 em{font-style:normal;display:block;color:transparent;-webkit-text-stroke:1px rgba(232,234,240,.2)}
@@ -562,10 +566,20 @@ footer{padding:48px 60px;border-top:1px solid var(--line);display:flex;align-ite
 
 <!-- ═══════ UNIVERSE ═══════ -->
 <section class="page" id="universe">
+  <!-- Cinematic header -->
+  <div class="universe-header">
+    <img class="hero-bg-img" id="universeBg" src="">
+    <div class="universe-header-overlay"></div>
+    <div class="universe-header-content">
+      <div class="section-label" style="position:relative;z-index:2">Science &amp; Fiction</div>
+      <h1 style="font-family:'Bebas Neue',sans-serif;font-size:clamp(60px,10vw,120px);line-height:.9;position:relative;z-index:2">THE <em style="font-style:normal;color:transparent;-webkit-text-stroke:1px rgba(232,234,240,.25)">UNIVERSE</em><br>EXPLAINED</h1>
+      <p style="font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.15em;color:var(--accent);text-transform:uppercase;margin-top:20px;position:relative;z-index:2">Real quantum physics · infinite realities</p>
+    </div>
+  </div>
+  <!-- Box diagram + description -->
   <div class="universe-hero">
     <div>
-      <div class="section-label">Science &amp; Fiction</div>
-      <h1>THE <em>UNIVERSE</em><br>EXPLAINED</h1>
+      <h1>THE <em>SCIENCE<br>BEHIND IT</em></h1>
       <p>Dark Matter draws from real quantum physics to build its terrifying multiverse. Here's the science — and why it's more plausible than you'd think.</p>
     </div>
     <div class="box-diagram">
@@ -770,6 +784,7 @@ function loadMedia() {
   loadImg('tl4', 'img/ep8.webp');
 
   // Universe images (1-6)
+  loadImg('universeBg', 'img/universe2.png');
   for (let i = 0; i < 6; i++) {
     loadImg(`n${i}`, `img/universe${i+1}.png`);
   }
