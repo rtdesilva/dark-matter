@@ -84,7 +84,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:28px 60px;display:f
 @keyframes scrollPulse{0%,100%{opacity:.3;transform:scaleY(.8)}50%{opacity:1;transform:scaleY(1)}}
 .episode-strip{background:var(--deep);padding:80px 60px;position:relative;overflow:hidden}
 .episode-strip::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(to right,transparent,var(--accent),transparent)}
-.ep-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:2px}
+.ep-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:3px}
 .ep-card{position:relative;aspect-ratio:16/9;overflow:hidden;cursor:none;background:var(--void)}
 .ep-card-img{position:absolute;inset:0;background-size:cover;background-position:center;transition:transform .6s cubic-bezier(.23,1,.32,1)}
 .ep-card:hover .ep-card-img{transform:scale(1.06)}
@@ -326,12 +326,17 @@ footer{padding:48px 60px;border-top:1px solid var(--line);display:flex;align-ite
   </div>
 
   <div class="episode-strip">
-    <div class="section-label">Featured Episodes</div>
+    <div class="section-label">All Episodes — Season 1</div>
     <div class="ep-grid">
       <div class="ep-card"><img class="ep-card-img skeleton" id="ep0" src=""><div class="ep-card-overlay"></div><div class="ep-number">01</div><div class="ep-info"><div class="ep-sub">Episode 1</div><div class="ep-title">Are You Happy in Your Life?</div><div class="ep-duration">54 min</div></div></div>
       <div class="ep-card"><img class="ep-card-img skeleton" id="ep1" src=""><div class="ep-card-overlay"></div><div class="ep-number">02</div><div class="ep-info"><div class="ep-sub">Episode 2</div><div class="ep-title">Trip of a Lifetime</div><div class="ep-duration">48 min</div></div></div>
-      <div class="ep-card"><img class="ep-card-img skeleton" id="ep2" src=""><div class="ep-card-overlay"></div><div class="ep-number">04</div><div class="ep-info"><div class="ep-sub">Episode 4</div><div class="ep-title">The Corridor</div><div class="ep-duration">52 min</div></div></div>
-      <div class="ep-card"><img class="ep-card-img skeleton" id="ep3" src=""><div class="ep-card-overlay"></div><div class="ep-number">09</div><div class="ep-info"><div class="ep-sub">Finale</div><div class="ep-title">Entanglement</div><div class="ep-duration">61 min</div></div></div>
+      <div class="ep-card"><img class="ep-card-img skeleton" id="ep2" src=""><div class="ep-card-overlay"></div><div class="ep-number">03</div><div class="ep-info"><div class="ep-sub">Episode 3</div><div class="ep-title">The Box</div><div class="ep-duration">52 min</div></div></div>
+      <div class="ep-card"><img class="ep-card-img skeleton" id="ep3" src=""><div class="ep-card-overlay"></div><div class="ep-number">04</div><div class="ep-info"><div class="ep-sub">Episode 4</div><div class="ep-title">The Corridor</div><div class="ep-duration">52 min</div></div></div>
+      <div class="ep-card"><img class="ep-card-img skeleton" id="ep4" src=""><div class="ep-card-overlay"></div><div class="ep-number">05</div><div class="ep-info"><div class="ep-sub">Episode 5</div><div class="ep-title">Worldless</div><div class="ep-duration">48 min</div></div></div>
+      <div class="ep-card"><img class="ep-card-img skeleton" id="ep5" src=""><div class="ep-card-overlay"></div><div class="ep-number">06</div><div class="ep-info"><div class="ep-sub">Episode 6</div><div class="ep-title">Superposition</div><div class="ep-duration">49 min</div></div></div>
+      <div class="ep-card"><img class="ep-card-img skeleton" id="ep6" src=""><div class="ep-card-overlay"></div><div class="ep-number">07</div><div class="ep-info"><div class="ep-sub">Episode 7</div><div class="ep-title">In the Shadow of Dead Stars</div><div class="ep-duration">47 min</div></div></div>
+      <div class="ep-card"><img class="ep-card-img skeleton" id="ep7" src=""><div class="ep-card-overlay"></div><div class="ep-number">08</div><div class="ep-info"><div class="ep-sub">Episode 8</div><div class="ep-title">Jupiter</div><div class="ep-duration">48 min</div></div></div>
+      <div class="ep-card"><img class="ep-card-img skeleton" id="ep8" src=""><div class="ep-card-overlay"></div><div class="ep-number">09</div><div class="ep-info"><div class="ep-sub">Finale</div><div class="ep-title">Entanglement</div><div class="ep-duration">61 min</div></div></div>
     </div>
   </div>
 
@@ -592,11 +597,10 @@ function loadMedia() {
     ch.style.backgroundPosition = 'center 30%';
   }
 
-  // Episode images
-  loadImg('ep0', 'img/ep1.webp');
-  loadImg('ep1', 'img/ep2.webp');
-  loadImg('ep2', 'img/ep4.webp');
-  loadImg('ep3', 'img/ep9.webp');
+  // Episode images (1–9)
+  for (let i = 0; i < 9; i++) {
+    loadImg(`ep${i}`, `img/ep${i+1}.webp`);
+  }
   
   // Timeline thumbnails
   loadImg('tl0', 'img/ep1.webp');
