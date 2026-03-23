@@ -581,9 +581,9 @@ function loadMedia() {
   // Cast header bg
   const ch = document.getElementById('castHeader');
   if (ch) {
-    const ci = new Image();
-    ci.onload = () => { ch.style.backgroundImage = `url('${tmdb(BD[1],"w1920_and_h800_multi_faces")}')`;ch.style.backgroundSize='cover';ch.style.backgroundPosition='center 30%'; };
-    ci.src = tmdb(BD[1], 'w1920_and_h800_multi_faces');
+    ch.style.backgroundImage = `url('${tmdb(BD[1],"w1920_and_h800_multi_faces")}')`;
+    ch.style.backgroundSize = 'cover';
+    ch.style.backgroundPosition = 'center 30%';
   }
 
   s('Loading episode stills…');
