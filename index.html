@@ -577,33 +577,41 @@ function tmdb(path, size) { return IMG + (size||'original') + path; }
 function loadMedia() {
   const s = t => { const e = document.getElementById('loadStatus'); if(e) e.textContent = t; };
 
-  s('Loading backdrop imagery…');
-  loadImg('heroBg',    tmdb(BD[0], 'w1920_and_h800_multi_faces'));
-  loadImg('storyBg',   tmdb(BD[2], 'w1920_and_h800_multi_faces'));
-  loadImg('watchBg',   tmdb(BD[3], 'w1920_and_h800_multi_faces'));
+  s('Loading local imagery…');
+  
+  // Home / Backgrounds
+  loadImg('heroBg',    'img/ep1.webp');
+  loadImg('storyBg',   'img/ep3.webp');
+  loadImg('watchBg',   'img/ep8.webp');
 
   // Cast header bg
   const ch = document.getElementById('castHeader');
   if (ch) {
-    ch.style.backgroundImage = `url('${tmdb(BD[1],"w1920_and_h800_multi_faces")}')`;
+    ch.style.backgroundImage = "url('img/ep5.webp')";
     ch.style.backgroundSize = 'cover';
     ch.style.backgroundPosition = 'center 30%';
   }
 
-  s('Loading episode stills…');
-  EP.forEach((p,i) => { loadImg('ep'+i, tmdb(p,'w780')); loadImg('tl'+i, tmdb(p,'w300')); });
+  // Episode images
+  loadImg('ep0', 'img/ep1.webp');
+  loadImg('ep1', 'img/ep2.webp');
+  loadImg('ep2', 'img/ep4.webp');
+  loadImg('ep3', 'img/ep9.webp');
+  
+  // Timeline thumbnails
+  loadImg('tl0', 'img/ep1.webp');
+  loadImg('tl1', 'img/ep2.webp');
+  loadImg('tl2', 'img/ep4.webp');
+  loadImg('tl3', 'img/ep6.webp');
+  loadImg('tl4', 'img/ep9.webp');
 
-  s('Loading cast photos…');
-  CAST.forEach((p,i) => loadImg('p'+i, tmdb(p,'w500')));
-
-  s('Loading science imagery…');
-  NASA.forEach((url,i) => loadImg('n'+i, url));
-
-  s('Loading poster strip…');
-  BD.forEach((p,i) => { if(i<5) loadImg('ps'+i, tmdb(p,'w780')); });
-
-  s('Fetching book cover…');
-  loadImg('bookCover', 'https://covers.openlibrary.org/b/isbn/9781101904220-M.jpg');
+  // Cast photos
+  loadImg('p0', 'img/Joel Edgerton.webp');
+  loadImg('p1', 'img/Jennifer Connelly.webp');
+  loadImg('p2', 'img/Alice Braga.webp');
+  loadImg('p3', 'img/Joel Edgerton.webp');
+  loadImg('p4', 'img/Jimmi Simpson.webp');
+  loadImg('p5', 'img/Dayo Okeniyi.webp');
 
   s('Ready');
 }
