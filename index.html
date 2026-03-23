@@ -256,6 +256,144 @@ footer{padding:48px 60px;border-top:1px solid var(--line);display:flex;align-ite
 .footer-links{display:flex;gap:24px;list-style:none}
 .footer-links a{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.15em;color:var(--muted);text-decoration:none;text-transform:uppercase;transition:color .3s}
 .footer-links a:hover{color:var(--accent)}
+
+/* ══════════════════════════════════════
+   RESPONSIVE — TABLET & MOBILE
+══════════════════════════════════════ */
+
+/* ── Hamburger toggle ── */
+.nav-toggle{
+  display:none;flex-direction:column;gap:5px;
+  background:none;border:none;padding:8px;cursor:none;z-index:1100;
+}
+.nav-toggle span{
+  width:22px;height:1px;background:var(--white);
+  transition:transform .35s ease, opacity .35s ease;display:block;
+}
+.nav-toggle.open span:nth-child(1){transform:translateY(6px) rotate(45deg)}
+.nav-toggle.open span:nth-child(2){opacity:0}
+.nav-toggle.open span:nth-child(3){transform:translateY(-6px) rotate(-45deg)}
+
+/* ── TABLET (≤1024px) ── */
+@media(max-width:1024px){
+  nav{padding:20px 32px}
+  .hero{padding:0 32px 80px}
+  .episode-strip{padding:60px 32px}
+  .cast-header,.cast-grid{padding-left:32px;padding-right:32px}
+  .story-body,.story-timeline,.universe-hero,.concepts-grid,.universe-faq,
+  .watch-platforms,.watch-info-strip,.newsletter-section,footer{padding-left:32px;padding-right:32px}
+
+  /* 2-col grids */
+  .ep-grid{grid-template-columns:repeat(2,1fr);gap:10px}
+  .cast-grid{grid-template-columns:repeat(2,1fr)}
+  .concepts-grid{grid-template-columns:repeat(2,1fr)}
+
+  /* Story / Universe stack */
+  .story-body{grid-template-columns:1fr;gap:40px}
+  .universe-hero{grid-template-columns:1fr;gap:32px}
+  .mv-wrapper{width:320px;height:320px;margin:0 auto}
+
+  /* Watch */
+  .watch-platforms{grid-template-columns:1fr}
+  .watch-info-strip{grid-template-columns:repeat(2,1fr);row-gap:24px}
+
+  /* Timeline 5→3 col scroll */
+  .timeline{grid-template-columns:repeat(3,1fr);overflow-x:auto;padding-bottom:8px}
+}
+
+/* ── MOBILE (≤768px) ── */
+@media(max-width:768px){
+  /* Nav */
+  nav{padding:14px 20px;background:rgba(5,5,8,.98)}
+  .nav-toggle{display:flex}
+  .nav-cta{display:none}
+  .nav-links{
+    position:fixed;inset:0;background:rgba(5,5,8,.98);
+    flex-direction:column;justify-content:center;align-items:center;
+    gap:36px;padding:80px 32px 40px;
+    transform:translateX(100%);
+    transition:transform .45s cubic-bezier(.23,1,.32,1);
+    z-index:1000;
+  }
+  .nav-links.open{transform:translateX(0)}
+  .nav-links a{font-size:13px;letter-spacing:.2em}
+
+  /* Body no overflow when menu open */
+  body.menu-open{overflow:hidden}
+
+  /* Hero */
+  .hero{padding:0 20px 80px;flex-direction:column;justify-content:flex-end;text-align:left}
+  .hero-title{font-size:clamp(56px,16vw,80px)}
+  .hero-title .line2{padding-left:0}
+  .hero-desc{font-size:14px;max-width:100%}
+  .hero-tags{gap:6px}
+  .hero-actions{flex-wrap:wrap;gap:12px}
+  .hero-meta{
+    position:static;flex-direction:row;align-items:center;
+    margin-top:32px;gap:24px;right:auto;bottom:auto;
+  }
+  .meta-item{align-items:flex-start}
+  .meta-item strong{font-size:22px}
+  .portal{display:none}
+  .scroll-indicator{display:none}
+
+  /* Episode grid — 1 col */
+  .ep-grid{grid-template-columns:1fr;gap:8px}
+  .episode-strip{padding:40px 20px}
+
+  /* Story */
+  .story-hero{height:45vh}
+  .story-body{grid-template-columns:1fr;gap:32px;padding:40px 20px}
+  .story-text h2{font-size:36px}
+  .mv-wrapper{width:260px;height:260px;margin:0 auto}
+  .story-timeline{padding:40px 20px}
+  .timeline{grid-template-columns:repeat(2,1fr);gap:16px;overflow-x:auto}
+  .timeline::before{display:none}
+  .tl-item{padding-top:8px}
+  .tl-dot{display:none}
+
+  /* Cast */
+  .cast-header{padding:120px 20px 40px}
+  .cast-header h1{font-size:clamp(48px,14vw,80px)}
+  .cast-header::after{display:none}
+  .cast-grid{grid-template-columns:1fr;padding:0 20px 40px;gap:3px}
+  .cast-card{aspect-ratio:16/9}
+  .cast-bio{max-height:60px;opacity:.7}
+
+  /* Universe */
+  .universe-hero{padding:120px 20px 40px;grid-template-columns:1fr;gap:28px}
+  .universe-hero h1{font-size:clamp(44px,12vw,72px)}
+  .box-diagram{padding:20px}
+  .concepts-grid{grid-template-columns:1fr;padding:0 20px 40px}
+  .universe-faq{padding:32px 20px}
+  .faq-q{font-size:14px}
+
+  /* Watch */
+  .watch-hero{height:55vh}
+  .play-label{font-size:clamp(28px,9vw,48px)}
+  .play-circle{width:80px;height:80px}
+  .play-circle::before{inset:-8px}
+  .play-circle::after{inset:-16px}
+  .watch-poster-strip{height:auto;flex-direction:column}
+  .poster-frame{height:180px;flex:none}
+  .poster-frame:hover{flex:none}
+  .watch-platforms{padding:32px 20px 0;grid-template-columns:1fr}
+  .platform-card{padding:24px 20px}
+  .platform-name{font-size:26px}
+  .watch-info-strip{grid-template-columns:repeat(2,1fr);padding:32px 20px;gap:24px}
+  .watch-info-item{padding:0 12px;border-left:1px solid var(--line)}
+  .watch-info-item:first-child{border-left:none;padding-left:0}
+  .newsletter-section{padding:48px 20px}
+  .email-form{flex-direction:column}
+  .email-form button{width:100%}
+
+  /* Footer */
+  footer{padding:32px 20px;flex-direction:column;gap:16px;text-align:center}
+  .footer-links{display:none}
+
+  /* Trailer modal */
+  .trailer-inner{width:calc(100vw - 24px)}
+}
 </style>
 </head>
 <body>
@@ -282,12 +420,15 @@ footer{padding:48px 60px;border-top:1px solid var(--line);display:flex;align-ite
 <!-- NAV -->
 <nav>
   <a href="#" class="nav-logo" onclick="showPage('home');return false">DARK<span>MATTER</span></a>
-  <ul class="nav-links">
-    <li><a href="#" class="active" id="nav-home"     onclick="showPage('home');return false">Home</a></li>
-    <li><a href="#"               id="nav-story"    onclick="showPage('story');return false">Story</a></li>
-    <li><a href="#"               id="nav-cast"     onclick="showPage('cast');return false">Cast</a></li>
-    <li><a href="#"               id="nav-universe" onclick="showPage('universe');return false">Universe</a></li>
-    <li><a href="#"               id="nav-watch"    onclick="showPage('watch');return false">Watch</a></li>
+  <div class="nav-toggle" id="navToggle" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+  </div>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#" class="active" id="nav-home"     onclick="showPage('home');toggleMenu(true);return false">Home</a></li>
+    <li><a href="#"               id="nav-story"    onclick="showPage('story');toggleMenu(true);return false">Story</a></li>
+    <li><a href="#"               id="nav-cast"     onclick="showPage('cast');toggleMenu(true);return false">Cast</a></li>
+    <li><a href="#"               id="nav-universe" onclick="showPage('universe');toggleMenu(true);return false">Universe</a></li>
+    <li><a href="#"               id="nav-watch"    onclick="showPage('watch');toggleMenu(true);return false">Watch</a></li>
   </ul>
   <a href="#" class="nav-cta" onclick="showPage('watch');return false">Stream Now</a>
 </nav>
@@ -663,6 +804,22 @@ function showPage(id) {
   const n = document.getElementById('nav-'+id);
   if(n) n.classList.add('active');
   window.scrollTo(0,0);
+}
+
+/* ── Mobile menu toggle ── */
+function toggleMenu(forceClose) {
+  const btn  = document.getElementById('navToggle');
+  const menu = document.getElementById('navLinks');
+  const isOpen = menu.classList.contains('open');
+  if (forceClose || isOpen) {
+    menu.classList.remove('open');
+    btn.classList.remove('open');
+    document.body.classList.remove('menu-open');
+  } else {
+    menu.classList.add('open');
+    btn.classList.add('open');
+    document.body.classList.add('menu-open');
+  }
 }
 
 /* ── FAQ ── */
