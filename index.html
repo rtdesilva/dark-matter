@@ -84,9 +84,9 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:28px 60px;display:f
 @keyframes scrollPulse{0%,100%{opacity:.3;transform:scaleY(.8)}50%{opacity:1;transform:scaleY(1)}}
 .episode-strip{background:var(--deep);padding:80px 60px;position:relative;overflow:hidden}
 .episode-strip::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(to right,transparent,var(--accent),transparent)}
-.ep-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:3px}
-.ep-card{position:relative;aspect-ratio:16/9;overflow:hidden;cursor:none;background:var(--void)}
-.ep-card-img{position:absolute;inset:0;background-size:cover;background-position:center;transition:transform .6s cubic-bezier(.23,1,.32,1)}
+.ep-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}
+.ep-card{position:relative;overflow:hidden;cursor:none;background:var(--void);display:flex;flex-direction:column}
+.ep-card-img{width:100%;height:auto;display:block;transition:transform .6s cubic-bezier(.23,1,.32,1)}
 .ep-card:hover .ep-card-img{transform:scale(1.06)}
 .ep-card-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(5,5,8,.98) 0%,rgba(5,5,8,.2) 60%,transparent 100%)}
 .ep-number{position:absolute;top:12px;left:12px;font-family:'Bebas Neue',sans-serif;font-size:42px;color:rgba(255,255,255,.12);line-height:1;z-index:1}
