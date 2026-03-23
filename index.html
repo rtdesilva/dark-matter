@@ -617,6 +617,11 @@ function loadMedia() {
   loadImg('p4', 'img/Jimmi Simpson.png');
   loadImg('p5', 'img/Dayo Okeniyi.png');
 
+  // Universe images (1-6)
+  for (let i = 0; i < 6; i++) {
+    loadImg(`n${i}`, `img/universe${i+1}.png`);
+  }
+
   s('Ready');
 }
 
